@@ -2,12 +2,12 @@
     <div class="container-xxl d-flex h-100">
       <ul class="menu-inner">
         <!-- Dashboards -->
-        {{-- <li class="menu-item @if (Request::is('/')) active @endif ">
+        <li class="menu-item @if (Request::is('/')) active @endif ">
           <a href="{{ url('/') }}" class="menu-link">
             <i class="menu-icon tf-icons mdi mdi-home-outline"></i>
             <div data-i18n="Dashboard">Dashboards</div>
           </a>
-        </li> --}}
+        </li>
 
         <li class="menu-item @if (Request::is('category')) active @endif ">
           <a href="{{ route('category') }}" class="menu-link">

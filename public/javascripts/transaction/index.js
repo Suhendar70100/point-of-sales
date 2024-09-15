@@ -4,6 +4,7 @@ const addButton = $('#buttonAdd')
 const modalTitle = $('.title')
 const submitButton = $('#submit-button')
 const listItems = $('.list-item')
+let dt_filter;
 
 
 const formConfig = {
@@ -26,7 +27,7 @@ const formConfig = {
 const getCategory = () => {
     listItems.select2({
         dropdownParent: $('#addTransactionButton'),
-        placeholder: 'Pilih BArang',
+        placeholder: 'Pilih Barang',
         allowClear: true,
     })
 }
@@ -59,9 +60,37 @@ const getInitData = () => {
     });
 }
 
-$(function () {
-    getInitData()
-})
+$(document).ready(function() {
+    if (transaction.length) {
+        dt_filter = transaction.DataTable({
+            processing: true,
+            ajax: {
+                url: `${BASE_URL}/api/transaction-data`,
+                type: 'GET',
+                dataSrc: 'data'
+            },
+            columns: [
+                {
+                    "orderable": false,
+                    "searchable": false,
+                    "render": function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {data: 'item', name: 'item'},
+                {data: 'quantity', name: 'quantity'},
+                {
+                    data: 'transaction_date', 
+                    name: 'transaction_date',
+                    render: function(data, type, row) {
+                        return moment(data).format('D MMMM YYYY');
+                    }
+                },
+                {data: 'aksi', name: 'aksi'},
+            ]
+        });
+    }
+});
 
 const resetForm = () => formConfig.fields.forEach(({id}) => $(`#${id}`).val(''))
 
@@ -157,7 +186,6 @@ $(document).on('click', '.btn-edit', function () {
     })
 })
 
-
 const update = id => {
     $.ajax({
         url: `${transactionUrl}/${id}`,
@@ -197,9 +225,6 @@ $(document).on('click', '.btn-delete', function () {
                 url: `${transactionUrl}/${id}`,
                 method: 'DELETE',
                 dataType: 'JSON',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
                 success: res => {
                     toastr.success(res.message, 'Success');
                     reloadDatatable(transaction);
@@ -210,4 +235,33 @@ $(document).on('click', '.btn-delete', function () {
             });
         }
     });
+});
+
+$(document).ready(function() {
+    let dateInput = document.createElement('input');
+    $(dateInput).addClass('form-control').attr('type', 'text').attr('id', 'daterange') .attr('placeholder', 'Pilih Rentang Tanggal').appendTo('.card-datatable .dataTables_filter');
+    
+    $(dateInput).daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+        let startDate = picker.startDate.format('YYYY-MM-DD');
+        let endDate = picker.endDate.format('YYYY-MM-DD');
+    
+        $('#daterange').val(startDate + ' - ' + endDate);
+        
+        dt_filter.ajax.url(`${BASE_URL}/api/transaction-data?start_date=` + startDate + '&end_date=' + endDate).load();
+    });
+    
+    $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+        $('#daterange').val('');
+    
+        dt_filter.ajax.url(`${BASE_URL}/api/transaction-data`).load();
+    });
+    
 });

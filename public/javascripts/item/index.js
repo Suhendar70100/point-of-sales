@@ -191,9 +191,6 @@ $(document).on('click', '.btn-delete', function () {
                 url: `${itemUrl}/${id}`,
                 method: 'DELETE',
                 dataType: 'JSON',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
                 success: res => {
                     toastr.success(res.message, 'Success');
                     reloadDatatable(item);

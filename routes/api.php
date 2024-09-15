@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ItemController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\TransactionController;
 
 Route::get('/user', function (Request $request) {
@@ -20,3 +21,4 @@ Route::get('/item-data', [ItemController::class, 'dataTable'])->name('item.dataT
 
 Route::apiResource('/transaction', TransactionController::class);
 Route::get('/transaction-data', [TransactionController::class, 'dataTable'])->name('transaction.dataTable');
+Route::get('/dashboard-data', [DashboardController::class, 'getDashboardData']);

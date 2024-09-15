@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
 use App\Models\Item;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -19,22 +20,33 @@ class TransactionController extends Controller
         return view('transaction.index', compact('items'));
     }
 
-    public function dataTable(): JsonResponse
+    public function dataTable(Request $request): JsonResponse
     {
-        $data = Transaction::query()->get();
+        $query = Transaction::query();
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            $startDateFormatted = Carbon::parse($startDate)->startOfDay();
+            $endDateFormatted = Carbon::parse($endDate)->endOfDay();
+
+            $query->whereBetween('transaction_date', [$startDateFormatted, $endDateFormatted]);
+        }
+
+        $data = $query->get();
 
         return DataTables::of($data)
-        ->addColumn('aksi', function ($row) {
-            return " <a href='#' data-id='$row->id' class='mdi mdi-pencil text-warning btn-edit'></a>
-                            <a href='#' data-id='$row->id' class='mdi mdi-trash-can text-primary btn-delete'></a>";
-        })
-        ->addColumn('item', function ($row) {
-            return $row->item->name;
-        })
-        ->rawColumns(['aksi'])
-        ->toJson();
+            ->addColumn('aksi', function ($row) {
+                return " <a href='#' data-id='$row->id' class='mdi mdi-pencil text-warning btn-edit'></a>
+                                <a href='#' data-id='$row->id' class='mdi mdi-trash-can text-primary btn-delete'></a>";
+            })
+            ->addColumn('item', function ($row) {
+                return $row->item->name; 
+            })
+            ->rawColumns(['aksi'])
+            ->toJson();
     }
-
 
     public function store(TransactionRequest $request)
     {

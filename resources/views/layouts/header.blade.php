@@ -12,14 +12,10 @@
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Siponic</title>
+    <title>Point Of Sale</title>
 
     <meta name="description" content=""/>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}"/>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -67,55 +63,6 @@
         .is-invalid + .select2-container--bootstrap .select2-selection--single {
             border: 1px solid #f44336;
         }
-        #cover-spin {
-            position: fixed;
-            width: 100%;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.7);
-            z-index: 9999;
-            display: none;
-        }
-
-        @-webkit-keyframes spin {
-            from {
-                -webkit-transform: rotate(0deg);
-            }
-
-            to {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        #cover-spin::after {
-            content: '';
-            display: block;
-            position: absolute;
-            left: 48%;
-            top: 40%;
-            width: 40px;
-            height: 40px;
-            border-style: dotted;
-            border-color: #20b2aa;
-            border-top-color: transparent;
-            border-width: 4px;
-            border-radius: 50%;
-            -webkit-animation: spin .8s linear infinite;
-            animation: spin .8s linear infinite;
-        }
-
         .navbar-logo {
             width: 200px;
             height: 63px;
