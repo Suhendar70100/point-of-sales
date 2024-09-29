@@ -97,4 +97,6 @@ class TransactionController extends Controller
 
         return response()->json(['message' => 'Barang berhasil dihapus'], 200);
     }
+
+    // testing
 }
